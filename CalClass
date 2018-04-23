@@ -1,0 +1,41 @@
+#!/bin/bash
+
+echo "*******************************************************************************"
+echo "$0"
+echo ""
+echo "          usage: $0 starfile which could use wildcard "
+echo "This script is devoleped by Zheng Liu (zl2354@cumc.columbia.edu or liuzheng.columbia@gmail.com) in the Frank lab in May of 2015"
+echo "It can calculate the number and percentage of particles in star files from relion"
+echo "*******************************************************************************"
+#exit 65
+
+if [ -z "$1" ]; then 
+              echo usage: $0 starfile which could use wildcard
+              exit
+          fi
+
+#echo Please, enter the Class Number
+read classNumber
+
+#echo Please, enter the Column No. of the Class number
+#read dd 
+#echo ${!#}
+classNumber=$[ classNumber+ 1]
+#echo $classNumber
+#echo $1 $2 $3 
+#echo $*
+
+for i in "$@" ; do
+	echo $i	
+	COUNTER=1
+        while [  $COUNTER -lt $classNumber ]; do
+	nn=`awk -v class=$COUNTER '{ if ($23==class) print $10 }' $i | wc -l `
+	##x=$nn
+	mm=`awk '{ if ($5==300.000000) print $6 }' $i | wc -l `
+	##y=$mm
+	RESULT=$(awk "BEGIN {printf \"%.2f%\",${nn}/${mm}*100}")
+	#tt=$( echo "$nn/$mm" | bc -l)
+	echo The iteration $i  class$COUNTER $nn percentage $RESULT total $mm  
+	let COUNTER=COUNTER+1 
+        done
+done
